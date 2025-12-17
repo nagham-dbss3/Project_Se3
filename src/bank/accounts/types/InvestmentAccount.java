@@ -1,6 +1,7 @@
 package bank.accounts.types;
 
 import bank.accounts.Account;
+import bank.interest.InvestmentInterest;
 
 /**
  * InvestmentAccount - Investment and trading account
@@ -30,6 +31,9 @@ public class InvestmentAccount extends Account {
         this.investmentValue = 0.0;
         this.totalInvested = 0.0;
         this.returns = 0.0;
+        
+        // Set strategy
+        setInterestStrategy(new InvestmentInterest(ANNUAL_TARGET_RETURN));
     }
     
     /**
@@ -38,7 +42,7 @@ public class InvestmentAccount extends Account {
      */
     @Override
     public double calculateInterest() {
-        double monthlyReturn = investmentValue * (ANNUAL_TARGET_RETURN / 12);
+        double monthlyReturn = super.calculateInterest();
         returns += monthlyReturn;
         investmentValue += monthlyReturn;
         System.out.println("Investment returns calculated: $" + monthlyReturn);
@@ -124,6 +128,10 @@ public class InvestmentAccount extends Account {
     public double getReturnPercentage() {
         if (totalInvested == 0) return 0.0;
         return (returns / totalInvested) * 100;
+    }
+
+    public double getInvestmentValue() {
+        return investmentValue;
     }
     
     /**

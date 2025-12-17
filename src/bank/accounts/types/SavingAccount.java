@@ -1,6 +1,7 @@
 package bank.accounts.types;
 
 import bank.accounts.Account;
+import bank.interest.SavingInterest;
 
 /**
  * SavingAccount - Savings account with interest calculation
@@ -24,6 +25,9 @@ public class SavingAccount extends Account {
     public SavingAccount(String accountHolder, double initialBalance) {
         super(accountHolder, "SAVINGS", initialBalance);
         
+        // Set strategy
+        setInterestStrategy(new SavingInterest(INTEREST_RATE));
+        
         if (initialBalance < MINIMUM_BALANCE) {
             throw new IllegalArgumentException(
                 "Initial balance must be at least " + MINIMUM_BALANCE + " for Savings Account");
@@ -36,8 +40,10 @@ public class SavingAccount extends Account {
      */
     @Override
     public double calculateInterest() {
-        double monthlyInterest = getBalance() * INTEREST_RATE / 12;
-        deposit(monthlyInterest);
+        double monthlyInterest = super.calculateInterest();
+        if (monthlyInterest > 0) {
+            deposit(monthlyInterest);
+        }
         return monthlyInterest;
     }
     

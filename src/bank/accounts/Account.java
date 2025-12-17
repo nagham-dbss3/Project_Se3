@@ -1,6 +1,7 @@
 package bank.accounts;
 
 import bank.accounts.states.ActiveState;
+import bank.interest.InterestStrategy;
 import bank.notifications.NotificationSubject;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -31,6 +32,9 @@ public abstract class Account extends NotificationSubject {
     
     // State management
     private AccountState currentState;
+
+    // Strategy Pattern
+    private InterestStrategy interestStrategy;
     
     /**
      * Constructor - Initializes a new account
@@ -227,6 +231,14 @@ public abstract class Account extends NotificationSubject {
         return balance;
     }
     
+    /**
+     * Protected setter for balance to allow subclasses to override standard logic
+     * e.g., LoanAccount managing negative balances
+     */
+    protected void setBalance(double balance) {
+        this.balance = balance;
+    }
+    
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -238,12 +250,25 @@ public abstract class Account extends NotificationSubject {
     // ============ ABSTRACT METHODS (to be implemented by subclasses) ============
     
     /**
-     * Calculates interest for the account
-     * Each account type implements its own interest calculation logic
+     * Sets the interest calculation strategy
+     * 
+     * @param strategy The new interest strategy to use
+     */
+    public void setInterestStrategy(InterestStrategy strategy) {
+        this.interestStrategy = strategy;
+    }
+
+    /**
+     * Calculates interest using the current strategy
      * 
      * @return The calculated interest amount
      */
-    public abstract double calculateInterest();
+    public double calculateInterest() {
+        if (interestStrategy != null) {
+            return interestStrategy.calculateInterest(this);
+        }
+        return 0.0;
+    }
     
     /**
      * Gets the account type-specific information

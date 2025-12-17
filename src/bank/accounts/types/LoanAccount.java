@@ -33,6 +33,9 @@ public class LoanAccount extends Account {
         this.interestRate = annualInterestRate / 12 / 100; // Convert to monthly rate
         this.monthsRemaining = monthsToRepay;
         this.minimumPayment = calculateMinimumPayment();
+        
+        // Set strategy
+        setInterestStrategy(new bank.interest.LoanInterest(annualInterestRate));
     }
     
     /**
@@ -57,12 +60,15 @@ public class LoanAccount extends Account {
      */
     @Override
     public double calculateInterest() {
-        double currentBalance = Math.abs(getBalance()); // Amount owed
-        double monthlyInterest = currentBalance * interestRate;
+        double monthlyInterest = super.calculateInterest();
         
         // Add interest (negative because it's a loan)
-        super.withdraw(-monthlyInterest); // Negative withdraw = add debt
-        System.out.println("Interest accrued: $" + monthlyInterest);
+        if (monthlyInterest > 0) {
+            // Decrease balance (increase debt) directly as withdraw is blocked/restricted
+            double newBalance = getBalance() - monthlyInterest;
+            setBalance(newBalance);
+            System.out.println("Interest accrued: $" + monthlyInterest);
+        }
         return monthlyInterest;
     }
     
