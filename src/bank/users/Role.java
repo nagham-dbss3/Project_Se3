@@ -1,9 +1,8 @@
-package bank.transactions;
+package bank.users;
 
-public enum UserRole {
+public enum Role {
     CUSTOMER,
     TELLER,
     MANAGER,
     ADMIN
 }
-

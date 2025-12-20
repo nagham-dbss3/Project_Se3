@@ -4,7 +4,7 @@ import bank.accounts.states.ActiveState;
 import bank.accounts.types.CheckingAccount;
 import bank.accounts.types.SavingAccount;
 import bank.transactions.TransactionService;
-import bank.transactions.UserRole;
+import bank.users.Role;
 import bank.transactions.history.TransactionLog;
 import bank.transactions.notification.ConsoleNotificationService;
 import bank.transactions.validator.TransactionValidator;
@@ -33,14 +33,14 @@ public class TransactionProcessingTest {
         c1.setState(new ActiveState());
 
         test("Deposit approved automatically under 1000", () -> {
-            boolean ok = service.deposit(a1, 500.0, "User1", UserRole.CUSTOMER);
+            boolean ok = service.deposit(a1, 500.0, "User1", Role.CUSTOMER);
             assertTrue(ok, "Deposit should succeed");
         });
 
         test("Withdraw respects daily limit", () -> {
-            service.deposit(a1, 20000.0, "Admin", UserRole.ADMIN);
-            boolean ok1 = service.withdraw(a1, 15000.0, "User1", UserRole.TELLER);
-            boolean ok2 = service.withdraw(a1, 6000.0, "User1", UserRole.TELLER);
+            service.deposit(a1, 20000.0, "Admin", Role.ADMIN);
+            boolean ok1 = service.withdraw(a1, 15000.0, "User1", Role.TELLER);
+            boolean ok2 = service.withdraw(a1, 6000.0, "User1", Role.TELLER);
             assertTrue(ok1, "First withdraw should succeed within limit");
             assertFalse(ok2, "Second withdraw should fail due to daily limit");
         });
@@ -48,7 +48,7 @@ public class TransactionProcessingTest {
         test("Transfer requires approval chain and logs", () -> {
             SavingAccount a3 = new SavingAccount("User4", 50000.0);
             a3.setState(new ActiveState());
-            boolean ok = service.transfer(a3, a2, 12000.0, "User4", UserRole.TELLER);
+            boolean ok = service.transfer(a3, a2, 12000.0, "User4", Role.TELLER);
             assertTrue(ok, "Transfer should succeed");
             assertTrue(log.getAllRecords().size() > 0, "Log should have records");
         });
@@ -56,12 +56,12 @@ public class TransactionProcessingTest {
         test("RBAC blocks large customer transaction", () -> {
             SavingAccount a3 = new SavingAccount("User5", 50000.0);
             a3.setState(new ActiveState());
-            boolean ok = service.transfer(a3, a2, 30000.0, "User5", UserRole.CUSTOMER);
+            boolean ok = service.transfer(a3, a2, 30000.0, "User5", Role.CUSTOMER);
             assertFalse(ok, "Customer should not be allowed to initiate 30k transfer");
         });
 
         test("Checking account overdraft allowed via withdraw execution", () -> {
-            boolean ok = service.withdraw(c1, 1200.0, "User3", UserRole.CUSTOMER);
+            boolean ok = service.withdraw(c1, 1200.0, "User3", Role.CUSTOMER);
             assertTrue(ok, "Checking account should allow overdraft withdraw");
         });
 
@@ -69,7 +69,7 @@ public class TransactionProcessingTest {
             bank.transactions.scheduler.ScheduledTransaction st =
                     new bank.transactions.scheduler.ScheduledTransaction(
                             bank.transactions.TransactionType.DEPOSIT, a2, a2, 1000.0,
-                            "System", UserRole.ADMIN, LocalDate.now(), 30);
+                            "System", Role.ADMIN, LocalDate.now(), 30);
             st.runIfDue(LocalDate.now(), service);
             assertTrue(log.getAllRecords().size() >= 1, "Scheduled transaction should be logged");
         });

@@ -1,6 +1,6 @@
 # Advanced Banking System 🏦
 
-A comprehensive banking software solution demonstrating advanced software engineering principles and design patterns. This system manages bank accounts, transactions, notifications, and interest calculations using a modular and extensible architecture.
+A comprehensive banking software solution demonstrating advanced software engineering principles and design patterns. This system manages bank accounts, transactions, notifications, interest calculations, and user access control using a modular and extensible architecture.
 
 ## 📋 Project Overview
 
@@ -9,6 +9,8 @@ This project implements a core banking system with the following key subsystems:
 2.  **Transaction Processing**: Secure transaction handling with approval chains and validation.
 3.  **Notification System**: Real-time alerts via Email, SMS, and In-App notifications.
 4.  **Interest Management**: Flexible interest calculation strategies based on account type and market conditions.
+5.  **User & Role Management**: RBAC (Role-Based Access Control) for secure system access.
+6.  **Admin Dashboard**: Comprehensive reporting and monitoring tools for administrators.
 
 ## 🛠️ Architecture & Design Patterns
 
@@ -39,6 +41,11 @@ The system is built using the following design patterns:
 -   **Components**: `ApprovalHandler`, `TellerApproval`, `ManagerApproval`, `AdminApproval`.
 -   **Location**: `src/bank/transactions/handlers/`
 
+### 6. **RBAC & Admin Module** (User Management) 🛡️
+-   **Purpose**: Manages user roles, permissions, and administrative reporting.
+-   **Components**: `User`, `Role` (Enum), `AccessControl`, `ReportingService`, `Dashboard`.
+-   **Location**: `src/bank/users/` and `src/bank/admin/`
+
 ---
 
 ## How to Compile and Run
@@ -52,11 +59,11 @@ To compile the project, run the following command from the project root:
 
 ```bash
 mkdir bin
-javac -d bin -sourcepath src src/App.java src/bank/accounts/*.java src/bank/accounts/states/*.java src/bank/accounts/types/*.java src/bank/accounts/composite/*.java src/bank/notifications/*.java src/bank/interest/*.java src/bank/transactions/*.java src/bank/transactions/handlers/*.java src/bank/transactions/history/*.java src/bank/transactions/notification/*.java src/bank/transactions/scheduler/*.java src/bank/transactions/validator/*.java
+javac -d bin -sourcepath src src/App.java src/bank/accounts/*.java src/bank/accounts/states/*.java src/bank/accounts/types/*.java src/bank/accounts/composite/*.java src/bank/notifications/*.java src/bank/interest/*.java src/bank/transactions/*.java src/bank/transactions/handlers/*.java src/bank/transactions/history/*.java src/bank/transactions/notification/*.java src/bank/transactions/scheduler/*.java src/bank/transactions/validator/*.java src/bank/users/*.java src/bank/admin/*.java
 ```
 
 ### Running the Demo
-The `AccountManagementDemo` class provides a comprehensive demonstration of all system features (Account Management, Notifications, Interest Strategies, Transaction Processing).
+The `AccountManagementDemo` class provides a comprehensive demonstration of all system features (Account Management, Notifications, Interest Strategies, Transaction Processing, Admin Dashboard).
 
 ```bash
 java -cp bin bank.accounts.AccountManagementDemo
@@ -101,10 +108,17 @@ src/
     │   ├── LoanInterest.java
     │   ├── InvestmentInterest.java
     │   └── test/
-    └── transactions/       # Chain of Responsibility (Processing)
-        ├── TransactionService.java
-        ├── handlers/       # Approval Handlers
-        ├── history/        # Transaction Logging
-        ├── validator/      # Validation Logic
-        └── notification/   # Internal Notification Service
+    ├── transactions/       # Chain of Responsibility (Processing)
+    │   ├── TransactionService.java
+    │   ├── handlers/       # Approval Handlers
+    │   ├── history/        # Transaction Logging
+    │   ├── validator/      # Validation Logic
+    │   └── notification/   # Internal Notification Service
+    ├── users/              # User & Role Management
+    │   ├── User.java
+    │   └── Role.java
+    └── admin/              # Admin Dashboard & Reporting
+        ├── Dashboard.java
+        ├── ReportingService.java
+        └── AccessControl.java
 ```

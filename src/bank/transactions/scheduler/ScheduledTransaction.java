@@ -3,7 +3,7 @@ package bank.transactions.scheduler;
 import bank.accounts.Account;
 import bank.transactions.TransactionService;
 import bank.transactions.TransactionType;
-import bank.transactions.UserRole;
+import bank.users.Role;
 import java.time.LocalDate;
 
 public class ScheduledTransaction {
@@ -12,12 +12,12 @@ public class ScheduledTransaction {
     private final Account target;
     private final double amount;
     private final String user;
-    private final UserRole role;
+    private final Role role;
     private LocalDate nextRun;
     private final int intervalDays;
 
     public ScheduledTransaction(TransactionType type, Account source, Account target, double amount,
-                                String user, UserRole role, LocalDate firstRun, int intervalDays) {
+                                String user, Role role, LocalDate firstRun, int intervalDays) {
         this.type = type;
         this.source = source;
         this.target = target;

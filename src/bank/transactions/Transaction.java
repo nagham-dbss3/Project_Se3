@@ -1,6 +1,7 @@
 package bank.transactions;
 
 import bank.accounts.Account;
+import bank.users.Role;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -12,14 +13,14 @@ public class Transaction {
     private final double amount;
     private final LocalDateTime timestamp;
     private final String initiatedBy;
-    private final UserRole initiatedByRole;
+    private final Role initiatedByRole;
 
     public Transaction(TransactionType type,
                        Account sourceAccount,
                        Account targetAccount,
                        double amount,
                        String initiatedBy,
-                       UserRole initiatedByRole) {
+                       Role initiatedByRole) {
         this.id = UUID.randomUUID().toString();
         this.type = type;
         this.sourceAccount = sourceAccount;
@@ -58,7 +59,7 @@ public class Transaction {
         return initiatedBy;
     }
 
-    public UserRole getInitiatedByRole() {
+    public Role getInitiatedByRole() {
         return initiatedByRole;
     }
 }

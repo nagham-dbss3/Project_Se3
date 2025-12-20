@@ -2,7 +2,7 @@ package bank.transactions.history;
 
 import bank.accounts.Account;
 import bank.transactions.TransactionType;
-import bank.transactions.UserRole;
+import bank.users.Role;
 import java.time.LocalDateTime;
 
 public class TransactionRecord {
@@ -13,7 +13,7 @@ public class TransactionRecord {
     private final LocalDateTime timestamp;
     private final double amount;
     private final String initiatedBy;
-    private final UserRole initiatedByRole;
+    private final Role initiatedByRole;
     private final boolean success;
     private final String failureReason;
     private final String approvedByLevel;
@@ -25,7 +25,7 @@ public class TransactionRecord {
                              LocalDateTime timestamp,
                              double amount,
                              String initiatedBy,
-                             UserRole initiatedByRole,
+                             Role initiatedByRole,
                              boolean success,
                              String failureReason,
                              String approvedByLevel) {
@@ -70,7 +70,7 @@ public class TransactionRecord {
         return initiatedBy;
     }
 
-    public UserRole getInitiatedByRole() {
+    public Role getInitiatedByRole() {
         return initiatedByRole;
     }
 

@@ -8,10 +8,17 @@ import bank.accounts.types.*;
 import bank.interest.*;
 import bank.notifications.*;
 import bank.transactions.*;
+import bank.users.Role;
+import bank.users.User;
+import bank.admin.AccessControl;
+import bank.admin.Dashboard;
+import bank.admin.ReportingService;
 
 import bank.transactions.history.TransactionLog;
 import bank.transactions.notification.ConsoleNotificationService;
 import bank.transactions.validator.TransactionValidator;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * AccountManagementDemo - Comprehensive Demonstration of Advanced Banking System
@@ -52,6 +59,57 @@ public class AccountManagementDemo {
 
         // Transaction Processing (Chain of Responsibility)
         demonstrateTransactionProcessing();
+        
+        // Admin & User Management
+        demonstrateAdminSystem();
+    }
+
+    /**
+     * Demonstrates Admin and User Management System
+     */
+    private static void demonstrateAdminSystem() {
+        System.out.println("\n========================================");
+        System.out.println("ADMIN & USER MANAGEMENT SYSTEM");
+        System.out.println("========================================\n");
+        
+        // 1. Setup Data
+        TransactionLog log = new TransactionLog();
+        SavingAccount a1 = new SavingAccount("User1", 5000.0);
+        SavingAccount a2 = new SavingAccount("User2", 3000.0);
+        List<Account> accounts = Arrays.asList(a1, a2);
+        
+        // 2. Setup Admin Components
+        ReportingService reportingService = new ReportingService(log);
+        AccessControl accessControl = new AccessControl();
+        Dashboard dashboard = new Dashboard(reportingService, accessControl);
+        
+        // 3. Create Users
+        User adminUser = new User("U001", "Admin Alice", Role.ADMIN);
+        User tellerUser = new User("U002", "Teller Bob", Role.TELLER);
+        User customerUser = new User("U003", "Customer Charlie", Role.CUSTOMER);
+        
+        // 4. Demonstrate Dashboard Access
+        System.out.println("--- 1. Admin Accessing Dashboard ---");
+        dashboard.showDashboard(adminUser, accounts);
+        
+        System.out.println("--- 2. Teller Accessing Dashboard ---");
+        // Teller might not have VIEW_REPORTS depending on permissions logic, let's check User.java
+        // TELLER has PROCESS_TRANSACTION, VIEW_ACCOUNTS. Does not have VIEW_REPORTS.
+        dashboard.showDashboard(tellerUser, accounts);
+        
+        System.out.println("--- 3. Customer Accessing Dashboard ---");
+        dashboard.showDashboard(customerUser, accounts);
+        
+        // 5. Demonstrate Access Control on Transactions
+        System.out.println("--- 4. Access Control Checks ---");
+        System.out.println("Admin initiating $200,000 transaction: " + 
+                           (accessControl.canPerformTransaction(adminUser, 200000.0) ? "ALLOWED" : "DENIED"));
+                           
+        System.out.println("Teller initiating $60,000 transaction (Limit 50k): " + 
+                           (accessControl.canPerformTransaction(tellerUser, 60000.0) ? "ALLOWED" : "DENIED"));
+                           
+        System.out.println("Customer initiating $15,000 transaction (Limit 10k): " + 
+                           (accessControl.canPerformTransaction(customerUser, 15000.0) ? "ALLOWED" : "DENIED"));
     }
     
     /**
@@ -139,19 +197,19 @@ public class AccountManagementDemo {
         // 1. Small Transaction (Auto Approval)
         System.out.println("--- 1. Small Transaction ($500) ---");
         // transfer(from, to, amount, user, role)
-        service.transfer(source, dest, 500.0, "Alice", UserRole.CUSTOMER);
+        service.transfer(source, dest, 500.0, "Alice", Role.CUSTOMER);
 
         // 2. Medium Transaction (Teller Approval)
         System.out.println("\n--- 2. Medium Transaction ($5,000) ---");
-        service.transfer(source, dest, 5000.0, "Teller1", UserRole.TELLER);
+        service.transfer(source, dest, 5000.0, "Teller1", Role.TELLER);
 
         // 3. Large Transaction (Manager Approval)
         System.out.println("\n--- 3. Large Transaction ($50,000) ---");
-        service.transfer(source, dest, 50000.0, "Manager1", UserRole.MANAGER);
+        service.transfer(source, dest, 50000.0, "Manager1", Role.MANAGER);
 
         // 4. Very Large Transaction (Admin Approval)
         System.out.println("\n--- 4. Very Large Transaction ($120,000) ---");
-        service.transfer(source, dest, 120000.0, "Admin1", UserRole.ADMIN);
+        service.transfer(source, dest, 120000.0, "Admin1", Role.ADMIN);
     }
     
     /**

@@ -1,6 +1,7 @@
 package bank.transactions;
 
 import bank.accounts.Account;
+import bank.users.Role;
 import bank.transactions.handlers.*;
 import bank.transactions.history.TransactionLog;
 import bank.transactions.history.TransactionRecord;
@@ -35,7 +36,7 @@ public class TransactionService {
         }
     }
 
-    public boolean deposit(Account account, double amount, String user, UserRole role) {
+    public boolean deposit(Account account, double amount, String user, Role role) {
         Transaction tx = new Transaction(TransactionType.DEPOSIT, account, account, amount, user, role);
         ValidationResult vr = validator.validate(account, account, TransactionType.DEPOSIT, amount, log);
         if (!vr.isOk()) {
@@ -57,7 +58,7 @@ public class TransactionService {
         return ok;
     }
 
-    public boolean withdraw(Account account, double amount, String user, UserRole role) {
+    public boolean withdraw(Account account, double amount, String user, Role role) {
         Transaction tx = new Transaction(TransactionType.WITHDRAW, account, null, amount, user, role);
         ValidationResult vr = validator.validate(account, null, TransactionType.WITHDRAW, amount, log);
         if (!vr.isOk()) {
@@ -79,7 +80,7 @@ public class TransactionService {
         return ok;
     }
 
-    public boolean transfer(Account from, Account to, double amount, String user, UserRole role) {
+    public boolean transfer(Account from, Account to, double amount, String user, Role role) {
         Transaction tx = new Transaction(TransactionType.TRANSFER, from, to, amount, user, role);
         ValidationResult vr = validator.validate(from, to, TransactionType.TRANSFER, amount, log);
         if (!vr.isOk()) {
@@ -105,7 +106,7 @@ public class TransactionService {
         return ok;
     }
 
-    private boolean hasPrivilege(UserRole role, double amount) {
+    private boolean hasPrivilege(Role role, double amount) {
         switch (role) {
             case CUSTOMER: return amount <= 10000.0;
             case TELLER: return amount <= 50000.0;
