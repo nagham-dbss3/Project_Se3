@@ -11,6 +11,7 @@ This project implements a core banking system with the following key subsystems:
 4.  **Interest Management**: Flexible interest calculation strategies based on account type and market conditions.
 5.  **User & Role Management**: RBAC (Role-Based Access Control) for secure system access.
 6.  **Admin Dashboard**: Comprehensive reporting and monitoring tools for administrators.
+7.  **Dynamic Features**: Add/Remove features (Overdraft, Premium, Insurance) dynamically using Decorator Pattern.
 
 ## 🛠️ Architecture & Design Patterns
 
@@ -21,27 +22,37 @@ The system is built using the following design patterns:
 -   **Components**: `NotificationSubject` (Subject), `Notifier` (Observer), `EmailNotifier`, `SMSNotifier`, `AppNotifier`.
 -   **Location**: `src/bank/notifications/`
 
-### 2. **Strategy Pattern** (Interest Calculation) 📈
+### 2. **Decorator Pattern** (Dynamic Features) 🎁
+-   **Purpose**: Dynamically adds responsibilities/features to accounts without modifying their code.
+-   **Components**: `AccountDecorator` (Base), `OverdraftProtection`, `PremiumAccount`, `InsuranceFeature`.
+-   **Location**: `src/bank/accounts/decorators/`
+
+### 3. **Strategy Pattern** (Interest Calculation) 📈
 -   **Purpose**: Allows switching interest calculation algorithms at runtime (e.g., Savings vs. Loan vs. Investment).
 -   **Components**: `InterestStrategy` (Interface), `SavingInterest`, `LoanInterest`, `InvestmentInterest`.
 -   **Location**: `src/bank/interest/`
 
-### 3. **State Pattern** (Account Lifecycle) 🔄
+### 3. **Strategy Pattern** (Interest Calculation) 📈
+-   **Purpose**: Allows switching interest calculation algorithms at runtime (e.g., Savings vs. Loan vs. Investment).
+-   **Components**: `InterestStrategy` (Interface), `SavingInterest`, `LoanInterest`, `InvestmentInterest`.
+-   **Location**: `src/bank/interest/`
+
+### 4. **State Pattern** (Account Lifecycle) 🔄
 -   **Purpose**: Manages account behavior based on its state (Active, Frozen, Suspended, Closed).
 -   **Components**: `AccountState` (Interface), `ActiveState`, `FrozenState`, `SuspendedState`, `ClosedState`.
 -   **Location**: `src/bank/accounts/states/`
 
-### 4. **Composite Pattern** (Account Hierarchy) 🌳
+### 5. **Composite Pattern** (Account Hierarchy) 🌳
 -   **Purpose**: Treats individual accounts and groups of accounts uniformly.
 -   **Components**: `AccountComponent`, `AccountGroup`, `AccountLeaf`.
 -   **Location**: `src/bank/accounts/composite/`
 
-### 5. **Chain of Responsibility** (Transaction Approval) ⛓️
+### 6. **Chain of Responsibility** (Transaction Approval) ⛓️
 -   **Purpose**: Processes transactions through a chain of approval handlers based on amount and role.
 -   **Components**: `ApprovalHandler`, `TellerApproval`, `ManagerApproval`, `AdminApproval`.
 -   **Location**: `src/bank/transactions/handlers/`
 
-### 6. **RBAC & Admin Module** (User Management) 🛡️
+### 7. **RBAC & Admin Module** (User Management) 🛡️
 -   **Purpose**: Manages user roles, permissions, and administrative reporting.
 -   **Components**: `User`, `Role` (Enum), `AccessControl`, `ReportingService`, `Dashboard`.
 -   **Location**: `src/bank/users/` and `src/bank/admin/`

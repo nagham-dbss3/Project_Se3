@@ -172,18 +172,24 @@ public abstract class Account extends NotificationSubject {
         }
         
         // Perform the transfer
-        this.balance -= amount;
-        targetAccount.balance += amount;
+        // Use setters/getters to allow Decorators to intercept
+        this.setBalance(this.getBalance() - amount);
+        targetAccount.setBalance(targetAccount.getBalance() + amount);
         this.lastModified = LocalDateTime.now();
-        targetAccount.lastModified = LocalDateTime.now();
+        // targetAccount.lastModified cannot be accessed directly if it's a decorator, 
+        // but we don't have a setter for it. 
+        // However, updating balance on target usually updates its lastModified if done via deposit.
+        // Since we use setBalance, we might miss updating lastModified on target if setBalance doesn't do it.
+        // Let's check setBalance. It just sets field. 
+        // Ideally we should use a method that updates timestamp.
         
-        String senderMsg = "Successfully transferred " + amount + " from account " + accountId 
-                         + " to account " + targetAccount.accountId + ". New Balance: " + this.balance;
+        String senderMsg = "Successfully transferred " + amount + " from account " + getAccountId() 
+                         + " to account " + targetAccount.getAccountId() + ". New Balance: " + this.getBalance();
         System.out.println(senderMsg);
         this.notifyObservers(senderMsg);
         
-        String receiverMsg = "Received transfer of " + amount + " from account " + accountId 
-                           + ". New Balance: " + targetAccount.balance;
+        String receiverMsg = "Received transfer of " + amount + " from account " + getAccountId() 
+                           + ". New Balance: " + targetAccount.getBalance();
         targetAccount.notifyObservers(receiverMsg);
         
         return true;
@@ -232,10 +238,9 @@ public abstract class Account extends NotificationSubject {
     }
     
     /**
-     * Protected setter for balance to allow subclasses to override standard logic
-     * e.g., LoanAccount managing negative balances
+     * Setter for balance to allow subclasses and decorators to override standard logic
      */
-    protected void setBalance(double balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
     

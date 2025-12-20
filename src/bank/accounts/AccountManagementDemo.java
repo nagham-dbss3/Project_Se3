@@ -3,6 +3,9 @@ package bank.accounts;
 import bank.accounts.composite.AccountComponent;
 import bank.accounts.composite.AccountGroup;
 import bank.accounts.composite.AccountLeaf;
+import bank.accounts.decorators.InsuranceFeature;
+import bank.accounts.decorators.OverdraftProtection;
+import bank.accounts.decorators.PremiumAccount;
 import bank.accounts.states.*;
 import bank.accounts.types.*;
 import bank.interest.*;
@@ -62,6 +65,50 @@ public class AccountManagementDemo {
         
         // Admin & User Management
         demonstrateAdminSystem();
+        
+        // Decorator Pattern
+        demonstrateDecoratorPattern();
+    }
+    
+    /**
+     * Demonstrates the Decorator Pattern for dynamic feature addition
+     */
+    private static void demonstrateDecoratorPattern() {
+        System.out.println("\n========================================");
+        System.out.println("DECORATOR PATTERN (Dynamic Features)");
+        System.out.println("========================================\n");
+        
+        // 1. Create a basic account
+        Account myAccount = new SavingAccount("Dynamic Dave", 1000.0);
+        System.out.println("--- 1. Basic Account ---");
+        System.out.println(myAccount.getAccountDetails());
+        
+        // 2. Add Overdraft Protection
+        System.out.println("\n--- 2. Adding Overdraft Protection ($500 limit) ---");
+        myAccount = new OverdraftProtection(myAccount, 500.0);
+        System.out.println(myAccount.getAccountDetails());
+        
+        // Test Overdraft
+        System.out.println("Attempting to withdraw $1200 (Balance: $1000)...");
+        myAccount.withdraw(1200.0); // Should succeed
+        
+        // 3. Add Premium Features
+        System.out.println("\n--- 3. Upgrading to Premium Account ---");
+        myAccount = new PremiumAccount(myAccount);
+        System.out.println(myAccount.getAccountDetails());
+        
+        // Test Premium Transfer
+        Account target = new SavingAccount("Target Tom", 500.0);
+        myAccount.transfer(target, 100.0);
+        
+        // 4. Add Insurance
+        System.out.println("\n--- 4. Adding Insurance Feature ---");
+        myAccount = new InsuranceFeature(myAccount);
+        System.out.println(myAccount.getAccountDetails());
+        
+        // Test Insurance Fee
+        System.out.println("Withdrawing $50 (Should charge insurance fee)...");
+        myAccount.withdraw(50.0);
     }
 
     /**
