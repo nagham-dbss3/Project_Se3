@@ -32,11 +32,6 @@ The system is built using the following design patterns:
 -   **Components**: `InterestStrategy` (Interface), `SavingInterest`, `LoanInterest`, `InvestmentInterest`.
 -   **Location**: `src/bank/interest/`
 
-### 3. **Strategy Pattern** (Interest Calculation) 📈
--   **Purpose**: Allows switching interest calculation algorithms at runtime (e.g., Savings vs. Loan vs. Investment).
--   **Components**: `InterestStrategy` (Interface), `SavingInterest`, `LoanInterest`, `InvestmentInterest`.
--   **Location**: `src/bank/interest/`
-
 ### 4. **State Pattern** (Account Lifecycle) 🔄
 -   **Purpose**: Manages account behavior based on its state (Active, Frozen, Suspended, Closed).
 -   **Components**: `AccountState` (Interface), `ActiveState`, `FrozenState`, `SuspendedState`, `ClosedState`.
@@ -73,6 +68,11 @@ mkdir bin
 javac -d bin -sourcepath src src/App.java src/bank/accounts/*.java src/bank/accounts/states/*.java src/bank/accounts/types/*.java src/bank/accounts/composite/*.java src/bank/notifications/*.java src/bank/interest/*.java src/bank/transactions/*.java src/bank/transactions/handlers/*.java src/bank/transactions/history/*.java src/bank/transactions/notification/*.java src/bank/transactions/scheduler/*.java src/bank/transactions/validator/*.java src/bank/users/*.java src/bank/admin/*.java
 ```
 
+Optional (compile tests too):
+```bash
+javac -d bin -sourcepath src src/bank/accounts/test/*.java src/bank/notifications/test/*.java src/bank/interest/test/*.java src/bank/transactions/test/*.java
+```
+
 ### Running the Demo
 The `AccountManagementDemo` class provides a comprehensive demonstration of all system features (Account Management, Notifications, Interest Strategies, Transaction Processing, Admin Dashboard).
 
@@ -80,19 +80,15 @@ The `AccountManagementDemo` class provides a comprehensive demonstration of all 
 java -cp bin bank.accounts.AccountManagementDemo
 ```
 
-### Running Tests
-To run the unit tests, you need to have the following JAR files in a `lib/` directory at the project root:
-- `junit-4.13.2.jar`
-- `hamcrest-core-1.3.jar`
-- `mockito-core-5.11.0.jar`
-- `byte-buddy-1.14.12.jar`
-- `byte-buddy-agent-1.14.12.jar`
-- `objenesis-3.3.jar`
-
-**Command to run all tests:**
+### Running Tests (without external libraries)
+Each test class provides a `main` method. You can run them directly:
 ```bash
-java -cp "bin;lib/junit-4.13.2.jar;lib/hamcrest-core-1.3.jar;lib/mockito-core-5.11.0.jar;lib/byte-buddy-1.14.12.jar;lib/byte-buddy-agent-1.14.12.jar;lib/objenesis-3.3.jar" org.junit.runner.JUnitCore bank.notifications.test.NotificationTest bank.interest.test.InterestStrategyTest bank.accounts.test.AccountManagementTest
+java -cp bin bank.notifications.test.NotificationTest
+java -cp bin bank.interest.test.InterestStrategyTest
+java -cp bin bank.accounts.test.AccountManagementTest
+java -cp bin bank.transactions.test.TransactionProcessingTest
 ```
+Note (Windows): Use `;` to separate entries in `classpath`.
 
 ## Project Structure
 ```
