@@ -1,5 +1,6 @@
 package bank.accounts;
 
+import bank.accounts.composite.AccountComponent;
 import bank.accounts.states.ActiveState;
 import bank.interest.InterestStrategy;
 import bank.notifications.NotificationSubject;
@@ -20,7 +21,7 @@ import java.util.UUID;
  * - Inherits from NotificationSubject
  * - Notifies observers on balance changes and state transitions
  */
-public abstract class Account extends NotificationSubject {
+public abstract class Account extends NotificationSubject implements AccountComponent {
     
     // Account basic information
     private String accountId;
@@ -283,6 +284,26 @@ public abstract class Account extends NotificationSubject {
     public abstract String getAccountDetails();
     
     // ============ UTILITY METHODS ============
+    
+    public String getComponentName() {
+        return getAccountHolder() + "'s " + getAccountType() + " Account";
+    }
+    
+    public double getTotalBalance() {
+        double b = getBalance();
+        return "LOAN".equals(getAccountType()) ? Math.abs(b) : b;
+    }
+    
+    public String getComponentDetails() {
+        return getAccountDetails();
+    }
+    
+    public void displayHierarchy(int depth) {
+        String indent = "  ".repeat(Math.max(0, depth));
+        System.out.println(indent + "├─ " + getComponentName());
+        System.out.println(indent + "│  Status: " + getCurrentStateName());
+        System.out.println(indent + "│  Balance: $" + String.format("%.2f", getTotalBalance()));
+    }
     
     /**
      * Displays account information
